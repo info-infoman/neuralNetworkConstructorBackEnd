@@ -24,16 +24,17 @@ userSchema.findById = function (cb) {
 
 const User = mongoose.model('Users', userSchema);
 
-
 exports.findByEmail = (email) => {
     return User.find({email: email});
 };
+
 exports.findById = (id) => {
-    return User.findById(id)
+    return User.findById(id, 'firstName lastName email permissionLevel')
         .then((result) => {
             result = result.toJSON();
             delete result._id;
             delete result.__v;
+            delete result.password;
             return result;
         });
 };
@@ -45,7 +46,7 @@ exports.createUser = (userData) => {
 
 exports.list = (perPage, page) => {
     return new Promise((resolve, reject) => {
-        User.find()
+        User.find({}, 'firstName lastName email permissionLevel')
             .limit(perPage)
             .skip(perPage * page)
             .exec(function (err, users) {

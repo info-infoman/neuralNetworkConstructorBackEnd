@@ -5,6 +5,7 @@ const app = express();
 
 const AuthorizationRouter = require('./authorization/routes.config');
 const UsersRouter = require('./users/routes.config');
+const NetworkRouter = require('./networks/routes.config');
 
 app.use(function (req, res, next) {
     res.header('Access-Control-Allow-Origin', '*');
@@ -22,7 +23,7 @@ app.use(function (req, res, next) {
 app.use(express.json());
 AuthorizationRouter.routesConfig(app);
 UsersRouter.routesConfig(app);
-
+NetworkRouter.routesConfig(app)
 
 app.listen(config.port, function () {
     console.log('app listening at port %s', config.port);

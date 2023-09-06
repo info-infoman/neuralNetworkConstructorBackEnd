@@ -9,28 +9,28 @@ const FREE = config.permissionLevels.NORMAL_USER;
 
 exports.routesConfig = function (app) {
     app.post('/networks', [
+        ValidationMiddleware.validJWTNeeded,
+        PermissionMiddleware.minimumPermissionLevelRequired(PAID),
         NetworksController.insert
     ]);
     app.get('/networks', [
         ValidationMiddleware.validJWTNeeded,
-        PermissionMiddleware.minimumPermissionLevelRequired(PAID),
+        PermissionMiddleware.minimumPermissionLevelRequired(FREE),
         NetworksController.list
     ]);
     app.get('/networks/:networkId', [
         ValidationMiddleware.validJWTNeeded,
         PermissionMiddleware.minimumPermissionLevelRequired(FREE),
-        PermissionMiddleware.onlySameUserOrAdminCanDoThisAction,
         NetworksController.getById
     ]);
     app.patch('/networks/:networkId', [
         ValidationMiddleware.validJWTNeeded,
         PermissionMiddleware.minimumPermissionLevelRequired(FREE),
-        PermissionMiddleware.onlySameUserOrAdminCanDoThisAction,
         NetworksController.patchById
     ]);
     app.delete('/networks/:networkId', [
         ValidationMiddleware.validJWTNeeded,
-        PermissionMiddleware.minimumPermissionLevelRequired(ADMIN),
+        PermissionMiddleware.minimumPermissionLevelRequired(FREE),
         NetworksController.removeById
     ]);
 };

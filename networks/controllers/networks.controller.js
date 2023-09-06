@@ -2,7 +2,7 @@ const NetworkModel = require('../models/networks.model');
 const crypto = require('crypto');
 
 exports.insert = (req, res) => {
-    NetworkModel.createNetwork(req.body)
+    NetworkModel.createNetwork(req.jwt.userId, req.body)
         .then((result) => {
             res.status(201).send({id: result._id});
         });
@@ -17,20 +17,21 @@ exports.list = (req, res) => {
             page = Number.isInteger(req.query.page) ? req.query.page : 0;
         }
     }
-    NetworkModel.list(limit, page)
+    NetworkModel.list(req.jwt.userId, limit, page)
         .then((result) => {
             res.status(200).send(result);
         })
 };
 
 exports.getById = (req, res) => {
-    NetworkModel.findById(req.params.networkId)
+    NetworkModel.findById(req.jwt.userId, req.params.networkId)
         .then((result) => {
             res.status(200).send(result);
         });
 };
+
 exports.patchById = (req, res) => {
-    NetworkModel.patchUser(req.params.networkId, req.body)
+    NetworkModel.patchNetwork(req.jwt.userId, req.params.networkId, req)
         .then((result) => {
             res.status(204).send({});
         });
@@ -38,7 +39,7 @@ exports.patchById = (req, res) => {
 };
 
 exports.removeById = (req, res) => {
-    NetworkModel.removeById(req.params.networkId)
+    NetworkModel.removeById(req.jwt.userId, req.params.networkId)
         .then((result)=>{
             res.status(204).send({});
         });
