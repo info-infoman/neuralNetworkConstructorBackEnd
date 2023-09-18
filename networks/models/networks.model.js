@@ -36,14 +36,15 @@ networkSchema.set('toJSON', {
     virtuals: true
 });
 
-networkSchema.findById = function (cb) {
-    return this.model('Networks').find({userId: this.userId, id: this.id}, cb);
-};
+//  networkSchema.findById = function (cb) {
+//     return this.model('Networks').find({userId: this.userId, id: this.id}, cb);
+//  };
 
 const Network = mongoose.model('Network', networkSchema);
 
 exports.findById = (userId, id) => {
-    return Network.findById(userId, id)
+    return Network.findById(id)
+        .where({ userId: userId })
         .then((result) => {
             result = result.toJSON();
             delete result._id;
@@ -77,10 +78,8 @@ exports.patchNetwork = (userId, id, networkData) => {
     const data = networkData.file;
     networkData = networkData.body;
     const patchedNetworkData = new Promise((resolve, reject) => {
-        Network.findOneAndUpdate({
-                userId: userId,
-                _id: id
-            }, networkData)
+        Network.findOneAndUpdate(id, networkData)
+            .where({ userId: userId })
             .exec(function (err, networkData) {
                 if (err) {
                     reject(err);
